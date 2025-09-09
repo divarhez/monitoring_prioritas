@@ -3,6 +3,14 @@
 <div class="container">
     <h1>Daftar Agent</h1>
     <a href="{{ route('agents.create') }}" class="btn btn-primary mb-3">Tambah Agent</a>
+
+    @if(session('success'))
+        <div class="alert alert-success">{{ session('success') }}</div>
+    @endif
+    @if(session('error'))
+        <div class="alert alert-danger">{{ session('error') }}</div>
+    @endif
+
     <table class="table table-bordered">
         <thead>
             <tr>

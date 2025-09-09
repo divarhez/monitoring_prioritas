@@ -11,22 +11,22 @@
             @csrf
             <div class="mb-3 input-group">
                 <span class="input-group-text"><i class="fas fa-user"></i></span>
-                <input type="text" class="form-control" id="name" name="name" value="{{ old('name') }}" placeholder="Nama" required autofocus>
+                <input type="text" class="form-control" id="name" name="name" value="{{ old('name') }}" placeholder="Nama" required autofocus autocomplete="name" inputmode="text">
             </div>
             @error('name')<span class="text-danger small">{{ $message }}</span>@enderror
             <div class="mb-3 input-group">
                 <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-                <input type="email" class="form-control" id="email" name="email" value="{{ old('email') }}" placeholder="Email" required>
+                <input type="email" class="form-control" id="email" name="email" value="{{ old('email') }}" placeholder="Email" required autocomplete="email" inputmode="email">
             </div>
             @error('email')<span class="text-danger small">{{ $message }}</span>@enderror
             <div class="mb-3 input-group">
                 <span class="input-group-text"><i class="fas fa-lock"></i></span>
-                <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
+                <input type="password" class="form-control" id="password" name="password" placeholder="Password" required autocomplete="new-password">
             </div>
             @error('password')<span class="text-danger small">{{ $message }}</span>@enderror
             <div class="mb-3 input-group">
                 <span class="input-group-text"><i class="fas fa-lock"></i></span>
-                <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" placeholder="Konfirmasi Password" required>
+                <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" placeholder="Konfirmasi Password" required autocomplete="new-password">
             </div>
             @error('password_confirmation')<span class="text-danger small">{{ $message }}</span>@enderror
             <div class="mb-3">

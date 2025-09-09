@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Barryvdh\DomPDF\Facades\Pdf;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class MaintenanceScheduleController extends Controller
 {
@@ -44,14 +44,26 @@ class MaintenanceScheduleController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
+        $data = $request->validate([
             'user_id' => 'required|exists:users,id',
             'agent_id' => 'required|exists:agents,id',
             'scheduled_date' => 'required|date',
             'category' => 'required|in:hardware,software,jaringan',
-            'status' => 'required|string',
+            'status' => 'nullable|in:scheduled,done,missed',
         ]);
-        \App\Models\MaintenanceSchedule::create($request->all());
+
+        // Default status ke 'scheduled' bila tidak diisi (form create tidak memiliki field status)
+        $data['status'] = $data['status'] ?? 'scheduled';
+
+        $schedule = \App\Models\MaintenanceSchedule::create($data);
+
+        \App\Models\AuditLog::create([
+            'user_id' => auth()->id(),
+            'action' => 'create',
+            'description' => 'Menambah jadwal maintenance ID: ' . $schedule->id,
+            'ip_address' => $request->ip(),
+        ]);
+
         return redirect()->route('maintenance-schedules.index')->with('success', 'Jadwal maintenance berhasil ditambahkan');
     }
 
@@ -89,6 +101,12 @@ class MaintenanceScheduleController extends Controller
         ]);
         $schedule = \App\Models\MaintenanceSchedule::findOrFail($id);
         $schedule->update($request->all());
+        \App\Models\AuditLog::create([
+            'user_id' => auth()->id(),
+            'action' => 'update',
+            'description' => 'Update jadwal maintenance ID: ' . $schedule->id,
+            'ip_address' => $request->ip(),
+        ]);
         return redirect()->route('maintenance-schedules.index')->with('success', 'Jadwal maintenance berhasil diupdate');
     }
 
@@ -99,6 +117,12 @@ class MaintenanceScheduleController extends Controller
     {
     $schedule = \App\Models\MaintenanceSchedule::findOrFail($id);
     $schedule->delete();
+    \App\Models\AuditLog::create([
+        'user_id' => auth()->id(),
+        'action' => 'delete',
+        'description' => 'Hapus jadwal maintenance ID: ' . $id,
+        'ip_address' => request()->ip(),
+    ]);
     return redirect()->route('maintenance-schedules.index')->with('success', 'Jadwal maintenance berhasil dihapus');
     }
 }

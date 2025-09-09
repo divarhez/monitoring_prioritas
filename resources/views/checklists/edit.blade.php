@@ -5,7 +5,13 @@
         <h4>Edit Checklist Maintenance</h4>
     </div>
     <div class="card-body">
-        <form method="POST" action="{{ route('checklists.update', $checklist->id) }}">
+            @if(session('success'))
+                <div class="alert alert-success">{{ session('success') }}</div>
+            @endif
+            @if(session('error'))
+                <div class="alert alert-danger">{{ session('error') }}</div>
+            @endif
+            <form method="POST" action="{{ route('checklists.update', $checklist->id) }}">
             @csrf
             @method('PUT')
             <div class="mb-3">

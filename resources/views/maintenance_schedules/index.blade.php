@@ -2,6 +2,14 @@
 @section('content')
 <div class="container">
     <h1>Daftar Jadwal Maintenance</h1>
+
+    @if(session('success'))
+        <div class="alert alert-success">{{ session('success') }}</div>
+    @endif
+    @if(session('error'))
+        <div class="alert alert-danger">{{ session('error') }}</div>
+    @endif
+
     <form method="GET" action="{{ route('maintenance-schedules.index') }}" class="mb-3">
         <div class="row">
             <div class="col-md-3">
@@ -29,7 +37,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach($maintenanceSchedules as $schedule)
+            @foreach($schedules as $schedule)
             <tr>
                 <td>{{ $schedule->user->name ?? '-' }}</td>
                 <td>{{ $schedule->agent->name ?? '-' }}</td>

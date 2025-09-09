@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -41,7 +42,7 @@
     <!-- Sidebar -->
     <aside class="main-sidebar sidebar-dark-primary elevation-4">
         <a href="/" class="brand-link">
-            <img src="https://www.pindad.com/assets/images/logo-pindad.png" alt="PT Pindad" class="brand-image img-circle elevation-3" style="opacity: .8; width:32px; margin-right:8px;">
+            <img src="{{ asset('images/logo-pindad.png') }}" alt="PT Pindad" class="brand-image img-circle elevation-3" style="opacity: .8; width:32px; margin-right:15px;">
             <span class="brand-text font-weight-bold">PT Pindad Monitoring TI</span>
         </a>
         <div class="sidebar">
@@ -52,18 +53,25 @@
                             <i class="nav-icon fas fa-tachometer-alt"></i><p>Dashboard</p>
                         </a>
                     </li>
+
                     @if(Auth::user() && Auth::user()->role === 'admin')
                         <li class="nav-item"><a href="/agents" class="nav-link {{ request()->is('agents*') ? 'active' : '' }}"><i class="nav-icon fas fa-user-secret"></i><p>Agents</p></a></li>
+
+                        <li class="nav-item"><a href="/users" class="nav-link {{ request()->is('users') ? 'active' : '' }}"><i class="nav-icon fas fa-users"></i><p>User Prioritas</p></a></li>
+
+
                         <li class="nav-item"><a href="/devices" class="nav-link {{ request()->is('devices*') ? 'active' : '' }}"><i class="nav-icon fas fa-desktop"></i><p>Devices</p></a></li>
-                        <li class="nav-item"><a href="/maintenance-schedules" class="nav-link {{ request()->is('maintenance-schedules*') ? 'active' : '' }}"><i class="nav-icon fas fa-calendar-check"></i><p>Maintenance Schedules</p></a></li>
-                        <li class="nav-item"><a href="/maintenance-reports" class="nav-link {{ request()->is('maintenance-reports*') ? 'active' : '' }}"><i class="nav-icon fas fa-file-alt"></i><p>Maintenance Reports</p></a></li>
-                        <li class="nav-item"><a href="/checklists" class="nav-link {{ request()->is('checklists*') ? 'active' : '' }}"><i class="nav-icon fas fa-list-check"></i><p>Checklists</p></a></li>
+                        <li class="nav-item"><a href="/maintenance-report" class="nav-link {{ request()->is('maintenance-report*') ? 'active' : '' }}"><i class="nav-icon fas fa-file-alt"></i><p>Laporan Maintenance</p></a></li>
+                        <li class="nav-item"><a href="/maintenance-history" class="nav-link {{ request()->is('maintenance-history*') ? 'active' : '' }}"><i class="nav-icon fas fa-history"></i><p>Histori Maintenance</p></a></li>
+
                     @elseif(Auth::user() && Auth::user()->role === 'agent')
-                        <li class="nav-item"><a href="/maintenance-reports" class="nav-link {{ request()->is('maintenance-reports*') ? 'active' : '' }}"><i class="nav-icon fas fa-file-alt"></i><p>Maintenance Reports</p></a></li>
-                        <li class="nav-item"><a href="/checklists" class="nav-link {{ request()->is('checklists*') ? 'active' : '' }}"><i class="nav-icon fas fa-list-check"></i><p>Checklists</p></a></li>
+                        <li class="nav-item"><a href="/devices" class="nav-link {{ request()->is('devices*') ? 'active' : '' }}"><i class="nav-icon fas fa-desktop"></i><p>Devices</p></a></li>
+                        <li class="nav-item"><a href="/maintenance-report" class="nav-link {{ request()->is('maintenance-report*') ? 'active' : '' }}"><i class="nav-icon fas fa-file-alt"></i><p>Laporan Maintenance</p></a></li>
+                        <li class="nav-item"><a href="/maintenance-history" class="nav-link {{ request()->is('maintenance-history*') ? 'active' : '' }}"><i class="nav-icon fas fa-history"></i><p>Histori Maintenance</p></a></li>
                     @elseif(Auth::user() && Auth::user()->role === 'user')
                         <li class="nav-item"><a href="/devices" class="nav-link {{ request()->is('devices*') ? 'active' : '' }}"><i class="nav-icon fas fa-desktop"></i><p>Devices</p></a></li>
-                        <li class="nav-item"><a href="/maintenance-reports" class="nav-link {{ request()->is('maintenance-reports*') ? 'active' : '' }}"><i class="nav-icon fas fa-file-alt"></i><p>Maintenance Reports</p></a></li>
+
+                        <li class="nav-item"><a href="/maintenance-report" class="nav-link {{ request()->is('maintenance-report*') ? 'active' : '' }}"><i class="nav-icon fas fa-file-alt"></i><p>Laporan Maintenance</p></a></li>
                     @endif
                     @if(Auth::check())
                         <li class="nav-item mt-3">
@@ -90,9 +98,10 @@
         <strong>PT Pindad &copy; 2025 - Monitoring TI</strong>
     </footer>
 </div>
-<!-- AdminLTE JS -->
-<script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
+<!-- Core JS (order matters): jQuery -> Bootstrap Bundle -> AdminLTE -->
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
 <!-- Toastr JS -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 <script>

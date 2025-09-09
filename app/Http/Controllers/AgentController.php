@@ -41,7 +41,13 @@ class AgentController extends Controller
             'email' => 'required|email|unique:agents,email',
             'phone' => 'nullable|string|max:20',
         ]);
-        \App\Models\Agent::create($request->all());
+        $agent = \App\Models\Agent::create($request->all());
+        \App\Models\AuditLog::create([
+            'user_id' => auth()->id(),
+            'action' => 'create',
+            'description' => 'Menambah agent ID: ' . $agent->id,
+            'ip_address' => $request->ip(),
+        ]);
         return redirect()->route('agents.index')->with('success', 'Agent berhasil ditambahkan');
     }
 
@@ -75,6 +81,12 @@ class AgentController extends Controller
         ]);
         $agent = \App\Models\Agent::findOrFail($id);
         $agent->update($request->all());
+        \App\Models\AuditLog::create([
+            'user_id' => auth()->id(),
+            'action' => 'update',
+            'description' => 'Update agent ID: ' . $agent->id,
+            'ip_address' => $request->ip(),
+        ]);
         return redirect()->route('agents.index')->with('success', 'Agent berhasil diupdate');
     }
 
@@ -85,6 +97,12 @@ class AgentController extends Controller
     {
     $agent = \App\Models\Agent::findOrFail($id);
     $agent->delete();
+    \App\Models\AuditLog::create([
+        'user_id' => auth()->id(),
+        'action' => 'delete',
+        'description' => 'Hapus agent ID: ' . $id,
+        'ip_address' => request()->ip(),
+    ]);
     return redirect()->route('agents.index')->with('success', 'Agent berhasil dihapus');
     }
 }

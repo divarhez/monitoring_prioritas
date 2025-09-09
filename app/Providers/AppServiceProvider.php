@@ -3,6 +3,9 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Pagination\Paginator;
+use App\Models\MaintenanceSchedule;
+use App\Observers\MaintenanceScheduleObserver;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -19,6 +22,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        // Use Bootstrap pagination views for links()
+        Paginator::useBootstrap();
+
+        // Register model observers
+        MaintenanceSchedule::observe(MaintenanceScheduleObserver::class);
     }
 }

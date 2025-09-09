@@ -1,3 +1,84 @@
+# Monitoring & Scheduling Maintenance User Prioritas
+
+## Quick Start (Pengaturan Cepat)
+
+Prasyarat:
+- PHP 8.1+
+- Composer
+- Node.js 18+ dan NPM
+- MySQL/MariaDB (atau DB lain yang didukung Laravel)
+
+Langkah instalasi:
+1) Salin environment
+   cp .env.example .env
+   - Atur koneksi database (DB_HOST, DB_DATABASE, DB_USERNAME, DB_PASSWORD)
+   - Opsional: APP_URL=http://127.0.0.1:8000
+
+2) Install dependency PHP
+   composer install
+   php artisan key:generate
+
+3) Migrasi database dan seeding user awal
+   php artisan migrate --seed
+
+   Seeder akan membuat akun:
+   - Admin: admin@company.com / password (role: admin)
+   - Agent: agent1@company.com / password (role: agent)
+   - User Prioritas: user1@company.com / password (role: user)
+
+4) Install dependency front-end dan build aset
+   npm install
+   npm run build
+   (Untuk pengembangan lokal gunakan: npm run dev)
+
+5) Jalankan server
+   php artisan serve
+   Akses: http://127.0.0.1:8000
+
+Catatan penting:
+- Aset front-end menggunakan Vite melalui laravel-vite-plugin dengan input resources/css/app.css dan resources/js/app.js.
+- Urutan JS pada layout sudah diperbaiki: jQuery -> Bootstrap Bundle -> AdminLTE (mencegah error "Cannot read properties of undefined (reading 'fn')").
+- Rute /users kini terlindungi auth + role:admin.
+- Jika mengganti database atau mengalami error migrasi, jalankan ulang:
+  php artisan migrate:fresh --seed
+
+Troubleshooting:
+- Login/Registrasi: Pastikan aset Vite termuat (manifest di public/build dibuat oleh npm run build).
+- Jika ada peringatan keamanan npm audit, jalankan npm audit fix (opsional). Periksa breaking changes sebelum menggunakan --force.
+## Fitur Utama
+- Dashboard statistik user, agent, perangkat, jadwal maintenance, grafik kategori
+- Manajemen User Prioritas, Agent, Jadwal Maintenance, Checklist, Laporan
+- Export data ke Excel/PDF
+- Filter & search canggih di semua modul
+- Role-based access (admin, agent, user prioritas)
+- Validasi input & notifikasi sukses/error
+
+## Role & Hak Akses
+- **Admin**: Kelola semua data, export, CRUD semua modul
+- **Agent**: Input laporan, checklist, lihat jadwal
+- **User Prioritas**: Lihat jadwal, histori, perangkat
+
+## Cara Penggunaan
+1. Login sesuai role
+2. Kelola data user, agent, jadwal, checklist, laporan
+3. Tambah jadwal maintenance dari halaman user/jadwal
+4. Export data dari halaman utama modul
+5. Gunakan filter untuk pencarian data
+
+## Deployment & Backup
+- Jalankan `php artisan migrate` untuk migrasi database
+- Backup database sebelum deployment
+
+## Testing
+- Pastikan semua fitur berjalan di desktop & mobile
+- Lakukan tes manual dan unit test
+
+## Kontak & Bantuan
+- Untuk bantuan, hubungi admin IT
+
+---
+Website ini dikembangkan untuk monitoring dan scheduling maintenance user prioritas secara profesional di PT Pindad.
+
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
 <p align="center">

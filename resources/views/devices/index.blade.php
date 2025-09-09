@@ -2,6 +2,9 @@
 @section('content')
 <div class="container">
     <h2>Data Perangkat</h2>
+    @if(Auth::user() && Auth::user()->role === 'admin')
+        <a href="{{ route('devices.create') }}" class="btn btn-success mb-3">Tambah Device</a>
+    @endif
     <form method="GET" action="" class="mb-3">
         <div class="row">
             <div class="col-md-4">

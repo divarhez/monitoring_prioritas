@@ -35,7 +35,13 @@ class ChecklistController extends Controller
             'status' => 'required|boolean',
             'note' => 'nullable|string',
         ]);
-        \App\Models\Checklist::create($request->all());
+        $checklist = \App\Models\Checklist::create($request->all());
+        \App\Models\AuditLog::create([
+            'user_id' => auth()->id(),
+            'action' => 'create',
+            'description' => 'Menambah checklist ID: ' . $checklist->id,
+            'ip_address' => $request->ip(),
+        ]);
         return redirect()->route('checklists.index')->with('success', 'Checklist berhasil ditambahkan');
     }
 
@@ -71,6 +77,12 @@ class ChecklistController extends Controller
         ]);
         $checklist = \App\Models\Checklist::findOrFail($id);
         $checklist->update($request->all());
+        \App\Models\AuditLog::create([
+            'user_id' => auth()->id(),
+            'action' => 'update',
+            'description' => 'Update checklist ID: ' . $checklist->id,
+            'ip_address' => $request->ip(),
+        ]);
         return redirect()->route('checklists.index')->with('success', 'Checklist berhasil diupdate');
     }
 
@@ -81,6 +93,12 @@ class ChecklistController extends Controller
     {
     $checklist = \App\Models\Checklist::findOrFail($id);
     $checklist->delete();
+    \App\Models\AuditLog::create([
+        'user_id' => auth()->id(),
+        'action' => 'delete',
+        'description' => 'Hapus checklist ID: ' . $id,
+        'ip_address' => request()->ip(),
+    ]);
     return redirect()->route('checklists.index')->with('success', 'Checklist berhasil dihapus');
     }
 }

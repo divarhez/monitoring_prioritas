@@ -4,6 +4,12 @@
     <h2>Tambah Checklist Maintenance</h2>
     <form method="POST" action="{{ route('checklists.store') }}">
         @csrf
+            @if(session('success'))
+                <div class="alert alert-success">{{ session('success') }}</div>
+            @endif
+            @if(session('error'))
+                <div class="alert alert-danger">{{ session('error') }}</div>
+            @endif
         <div class="mb-3">
             <label for="device_id" class="form-label">Perangkat</label>
             <select class="form-control" id="device_id" name="device_id" required>

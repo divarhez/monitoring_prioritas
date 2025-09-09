@@ -21,7 +21,10 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'role',
+        'role', // values: helpdesk, admin, agent, user
+        'department',
+        'position',
+        'phone',
     ];
 
     /**

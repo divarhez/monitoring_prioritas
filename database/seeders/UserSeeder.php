@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Schema;
 
 class UserSeeder extends Seeder
 {
@@ -12,9 +13,13 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-    \App\Models\Device::delete();
-    \App\Models\User::delete();
+        // Reset related tables safely
+        Schema::disableForeignKeyConstraints();
+        \App\Models\Device::query()->delete();
+        \App\Models\User::query()->delete();
+        Schema::enableForeignKeyConstraints();
 
+        // Seed baseline users
         \App\Models\User::create([
             'name' => 'Admin',
             'email' => 'admin@company.com',

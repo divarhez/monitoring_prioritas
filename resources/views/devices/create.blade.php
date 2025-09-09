@@ -33,11 +33,13 @@
             <textarea class="form-control" id="description" name="description"></textarea>
         </div>
         <div class="mb-3">
-            <label for="category" class="form-label">Kategori Maintenance</label>
+            <label for="category" class="form-label">Kategori Device</label>
             <select class="form-control" id="category" name="category" required>
-                <option value="hardware">Perangkat Keras (Hardware)</option>
-                <option value="software">Perangkat Lunak (Software)</option>
+                <option value="komputer">Komputer</option>
+                <option value="laptop">Laptop</option>
+                <option value="printer">Printer</option>
                 <option value="jaringan">Jaringan</option>
+                <option value="software">Software</option>
             </select>
         </div>
         <button type="submit" class="btn btn-primary">Simpan</button>

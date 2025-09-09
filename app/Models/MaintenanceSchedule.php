@@ -16,4 +16,22 @@ class MaintenanceSchedule extends Model
         'category',
         'status',
     ];
+
+    // Auto eager-load user to simplify views
+    protected $with = ['user'];
+
+    public function user()
+    {
+        return $this->belongsTo(\App\Models\User::class, 'user_id');
+    }
+
+    public function agent()
+    {
+        return $this->belongsTo(\App\Models\Agent::class, 'agent_id');
+    }
+
+    public function reports()
+    {
+        return $this->hasMany(\App\Models\MaintenanceReport::class, 'maintenance_schedule_id');
+    }
 }

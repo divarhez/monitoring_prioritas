@@ -14,12 +14,12 @@
             @csrf
             <div class="mb-3 input-group">
                 <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-                <input type="email" class="form-control" id="email" name="email" value="{{ old('email') }}" placeholder="Email" required autofocus>
+                <input type="email" class="form-control" id="email" name="email" value="{{ old('email') }}" placeholder="Email" required autofocus autocomplete="email" inputmode="email">
             </div>
             @error('email')<span class="text-danger small">{{ $message }}</span>@enderror
             <div class="mb-3 input-group">
                 <span class="input-group-text"><i class="fas fa-lock"></i></span>
-                <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
+                <input type="password" class="form-control" id="password" name="password" placeholder="Password" required autocomplete="current-password">
             </div>
             @error('password')<span class="text-danger small">{{ $message }}</span>@enderror
             <div class="mb-3 form-check">
