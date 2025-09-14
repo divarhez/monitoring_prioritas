@@ -25,13 +25,25 @@
                 </select>
             </div>
             <div class="mb-3">
-                <label for="device_id" class="form-label">Perangkat</label>
-                <select name="device_id" id="device_id" class="form-control" required>
-                    <option value="">-- Pilih Perangkat --</option>
+                <label class="form-label">Perangkat (Pilih satu atau lebih)</label>
+                <div class="row">
                     @foreach($devices as $device)
-                        <option value="{{ $device->id }}">{{ $device->type }}{{ $device->brand ? ' - '.$device->brand : '' }}</option>
+                        <div class="col-md-6">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="device_ids[]" value="{{ $device->id }}" id="device_{{ $device->id }}">
+                                <label class="form-check-label" for="device_{{ $device->id }}">
+                                    {{ $device->type }}{{ $device->brand ? ' - '.$device->brand : '' }}
+                                </label>
+                                <div class="form-check form-check-inline ml-3">
+                                    <input class="form-check-input" type="checkbox" name="problematic_devices[]" value="{{ $device->id }}" id="problematic_{{ $device->id }}">
+                                    <label class="form-check-label text-danger" for="problematic_{{ $device->id }}">
+                                        Bermasalah (Perlu Perbaikan)
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
                     @endforeach
-                </select>
+                </div>
             </div>
             <div class="mb-3">
                 <label for="result" class="form-label">Hasil Maintenance</label>

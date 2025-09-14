@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css">
     <!-- Toastr CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    @stack('styles')
 </head>
 <body class="hold-transition sidebar-mini">
 <div class="wrapper">
@@ -120,5 +121,6 @@
         @endif
     });
 </script>
+@stack('scripts')
 </body>
 </html>

@@ -22,6 +22,12 @@ Route::middleware(['auth','role:admin,agent,helpdesk'])->get(
     [App\Http\Controllers\MaintenanceReportController::class, 'download']
 )->name('maintenance-report.download');
 
+// Update repair status for devices in maintenance reports
+Route::middleware(['auth','role:agent'])->post(
+    '/maintenance-report/{reportId}/device/{deviceId}/update-repair-status',
+    [App\Http\Controllers\MaintenanceReportController::class, 'updateRepairStatus']
+)->name('maintenance-report.update-repair-status');
+
 
 // User Prioritas
 Route::middleware(['auth', 'role:admin'])->group(function () {

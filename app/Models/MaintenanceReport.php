@@ -11,7 +11,6 @@ class MaintenanceReport extends Model
 
     protected $fillable = [
         'maintenance_schedule_id',
-        'device_id',
         'result',
         'recommendation',
         'photo',
@@ -37,8 +36,8 @@ class MaintenanceReport extends Model
         return $this->belongsTo(\App\Models\MaintenanceSchedule::class, 'maintenance_schedule_id');
     }
 
-    public function device()
+    public function devices()
     {
-        return $this->belongsTo(\App\Models\Device::class, 'device_id');
+        return $this->belongsToMany(\App\Models\Device::class, 'maintenance_report_devices')->withPivot('is_problematic', 'repair_status');
     }
 }

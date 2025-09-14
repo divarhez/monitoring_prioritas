@@ -52,7 +52,7 @@
         </tr>
         <tr>
             <td class="key">User Prioritas</td>
-            <td>{{ $report->device->user->name ?? '-' }}</td>
+            <td>{{ $report->schedule->user->name ?? '-' }}</td>
             <td class="key">Agent</td>
             <td>{{ $report->schedule?->agent?->name ?? '-' }}</td>
         </tr>
@@ -67,21 +67,19 @@
     <table class="section">
         <thead>
             <tr>
-                <th colspan="2">Detail Perangkat</th>
+                <th colspan="3">Detail Perangkat</th>
             </tr>
         </thead>
         <tbody>
+            @foreach($report->devices as $device)
             <tr>
                 <td style="width: 180px;">Tipe / Jenis</td>
-                <td>{{ $report->device->type ?? '-' }}</td>
+                <td>{{ $device->type ?? '-' }}</td>
+                <td>{{ $device->brand ?? '-' }}</td>
             </tr>
+            @endforeach
             <tr>
-                <td>Brand</td>
-                <td>{{ $report->device->brand ?? '-' }}</td>
-            </tr>
-            <tr>
-                <td>Keterangan</td>
-                <td class="small muted">Perangkat terkait yang dikerjakan pada jadwal ini.</td>
+                <td colspan="3" class="small muted">Perangkat terkait yang dikerjakan pada jadwal ini.</td>
             </tr>
         </tbody>
     </table>
@@ -111,7 +109,7 @@
         </div>
         <div class="sign-box">
             <div class="small">Diverifikasi (User)</div>
-            <div class="sign-line">{{ $report->device->user->name ?? '-' }}</div>
+            <div class="sign-line">{{ $report->schedule->user->name ?? '-' }}</div>
         </div>
         <div class="sign-box">
             <div class="small">Mengetahui (Admin)</div>

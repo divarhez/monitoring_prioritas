@@ -1,92 +1,162 @@
 @extends('layouts.app')
+
 @section('content')
-<div class="row">
-    <div class="col-6 col-md-3 mb-3">
-        <div class="card shadow-lg border-0 animate__animated animate__fadeInUp" style="background:#e3fcec;">
-            <div class="card-body text-center">
-                <i class="fas fa-users fa-2x mb-2 text-success"></i>
-                <h3 class="fw-bold">{{ $userCount ?? 0 }}</h3>
-                <p class="mb-0">User Prioritas</p>
-            </div>
-        </div>
-    </div>
-    <div class="col-6 col-md-3 mb-3">
-        <div class="card shadow-lg border-0 animate__animated animate__fadeInUp" style="background:#e6f7ff;">
-            <div class="card-body text-center">
-                <i class="fas fa-user-secret fa-2x mb-2 text-info"></i>
-                <h3 class="fw-bold">{{ $agentCount ?? 0 }}</h3>
-                <p class="mb-0">Agent</p>
-            </div>
-        </div>
-    </div>
-    <div class="col-6 col-md-3 mb-3">
-        <div class="card shadow-lg border-0 animate__animated animate__fadeInUp" style="background:#fffbe6;">
-            <div class="card-body text-center">
-                <i class="fas fa-desktop fa-2x mb-2 text-warning"></i>
-                <h3 class="fw-bold">{{ $deviceCount ?? 0 }}</h3>
-                <p class="mb-0">Perangkat</p>
-            </div>
-        </div>
-    </div>
-    <div class="col-6 col-md-3 mb-3">
-        <div class="card shadow-lg border-0 animate__animated animate__fadeInUp" style="background:#ffeaea;">
-            <div class="card-body text-center">
-                <i class="fas fa-calendar-check fa-2x mb-2 text-danger"></i>
-                <h3 class="fw-bold">{{ $scheduleCount ?? 0 }}</h3>
-                <p class="mb-0">Jadwal Maintenance Bulan Ini</p>
-            </div>
-        </div>
-    </div>
-</div>
+<div class="container-fluid px-4 py-5">
 
-<div class="row mt-4">
-    <div class="col-12 col-xl-6 mb-3">
-        <div class="card shadow-sm border-0 h-100 animate__animated animate__fadeIn">
-            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-                <h5 class="card-title mb-0">Grafik Maintenance per Kategori</h5>
-                <i class="fas fa-chart-bar"></i>
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
+        <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-download fa-sm text-white-50"></i> Generate Report</a>
+    </div>
+
+    <div class="row">
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">User Prioritas</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $userCount ?? 0 }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-users fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="card-body">
-                <div class="w-100" style="height:320px;">
-                    <canvas id="categoryChart"></canvas>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Agent</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $agentCount ?? 0 }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-user-secret fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Perangkat</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $deviceCount ?? 0 }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-desktop fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Jadwal Maintenance (Bulan Ini)</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $scheduleCount ?? 0 }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-calendar-check fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="col-12 col-xl-6 mb-3">
-        <div class="card shadow-sm border-0 h-100 animate__animated animate__fadeIn">
-            <div class="card-header bg-warning text-dark d-flex justify-content-between align-items-center">
-                <h5 class="card-title mb-0">Grafik Perangkat Bermasalah</h5>
-                <i class="fas fa-chart-pie"></i>
+
+    <div class="row mt-4">
+        <div class="col-12 col-xl-8 mb-4">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0 text-gray-800">Grafik Maintenance per Bulan</h5>
+                    <i class="fas fa-chart-line text-gray-400"></i>
+                </div>
+                <div class="card-body">
+                    <div class="w-100" style="height:320px;">
+                        <canvas id="maintenanceChart"></canvas>
+                    </div>
+                </div>
             </div>
-            <div class="card-body">
-                <div class="w-100" style="height:320px;">
-                    <canvas id="deviceChart"></canvas>
+        </div>
+        <div class="col-12 col-xl-4 mb-4">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0 text-gray-800">Maintenance per Kategori</h5>
+                    <i class="fas fa-chart-pie text-gray-400"></i>
+                </div>
+                <div class="card-body">
+                    <div class="w-100" style="height:320px;">
+                        <canvas id="categoryChart"></canvas>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+
 </div>
 
-<!-- Catatan: Bagian "Histori Maintenance Terbaru" dihapus sesuai permintaan -->
+@endsection
 
-<!-- Scripts -->
+@push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    (function () {
-        // Pastikan canvas responsive
-        const categoryStats = @json($categoryStats ?? ['hardware'=>0,'software'=>0,'jaringan'=>0]);
-        const deviceStats = @json($deviceStats ?? ['labels'=>[],'data'=>[]]);
+    document.addEventListener("DOMContentLoaded", function() {
+        // Data from controller
+        const categoryStats = @json($categoryStats ?? ['hardware' => 0, 'software' => 0, 'jaringan' => 0]);
+        const maintenanceStats = @json($maintenanceStats ?? ['labels' => [], 'data' => []]);
 
+        // 1. Maintenance per Kategori (Pie Chart)
         const categoryCtx = document.getElementById('categoryChart').getContext('2d');
         new Chart(categoryCtx, {
-            type: 'bar',
+            type: 'doughnut',
             data: {
                 labels: Object.keys(categoryStats),
                 datasets: [{
                     label: 'Jumlah Maintenance',
                     data: Object.values(categoryStats),
-                    backgroundColor: ['#007bff', '#ffc107', '#28a745']
+                    backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc'],
+                    hoverBackgroundColor: ['#2e59d9', '#17a673', '#2c9faf'],
+                    hoverBorderColor: "rgba(234, 236, 244, 1)",
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: { boxWidth: 12, padding: 20 }
+                    }
+                },
+                cutout: '80%',
+            }
+        });
+
+        // 2. Grafik Maintenance per Bulan (Line Chart)
+        const maintenanceCtx = document.getElementById('maintenanceChart').getContext('2d');
+        new Chart(maintenanceCtx, {
+            type: 'line',
+            data: {
+                labels: maintenanceStats.labels,
+                datasets: [{
+                    label: 'Jumlah Laporan',
+                    data: maintenanceStats.data,
+                    fill: true,
+                    backgroundColor: 'rgba(78, 115, 223, 0.05)',
+                    borderColor: 'rgba(78, 115, 223, 1)',
+                    tension: 0.3,
+                    pointRadius: 3,
+                    pointBackgroundColor: "rgba(78, 115, 223, 1)",
                 }]
             },
             options: {
@@ -103,29 +173,6 @@
                 }
             }
         });
-
-        const deviceCtx = document.getElementById('deviceChart').getContext('2d');
-        new Chart(deviceCtx, {
-            type: 'pie',
-            data: {
-                labels: deviceStats.labels,
-                datasets: [{
-                    label: 'Perangkat Bermasalah',
-                    data: deviceStats.data,
-                    backgroundColor: ['#007bff', '#17a2b8', '#ffc107', '#28a745', '#dc3545']
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'bottom',
-                        labels: { boxWidth: 12 }
-                    }
-                }
-            }
-        });
-    })();
+    });
 </script>
-@endsection
+@endpush

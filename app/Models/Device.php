@@ -17,9 +17,9 @@ class Device extends Model
         return $this->belongsTo(\App\Models\User::class, 'user_id');
     }
 
-    public function reports()
+    public function maintenanceReports()
     {
-        return $this->hasMany(\App\Models\MaintenanceReport::class, 'device_id');
+        return $this->belongsToMany(\App\Models\MaintenanceReport::class, 'maintenance_report_devices');
     }
 
     protected $fillable = [

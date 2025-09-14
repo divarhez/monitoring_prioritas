@@ -42,7 +42,8 @@ class DashboardController extends Controller
         // Grafik perangkat: top 5 tipe perangkat berdasarkan jumlah laporan tahun berjalan
         $deviceQuery = \App\Models\MaintenanceReport::query()
             ->join('maintenance_schedules', 'maintenance_schedules.id', '=', 'maintenance_reports.maintenance_schedule_id')
-            ->join('devices', 'devices.id', '=', 'maintenance_reports.device_id')
+            ->join('maintenance_report_devices', 'maintenance_report_devices.maintenance_report_id', '=', 'maintenance_reports.id')
+            ->join('devices', 'devices.id', '=', 'maintenance_report_devices.device_id')
             ->whereYear('maintenance_reports.created_at', now()->year);
 
         if ($user && $role === 'agent') {

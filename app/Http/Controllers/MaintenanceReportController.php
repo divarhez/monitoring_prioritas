@@ -13,7 +13,7 @@ class MaintenanceReportController extends Controller
      */
     public function index()
     {
-        $reports = \App\Models\MaintenanceReport::with(['device.user', 'schedule.agent'])->orderByDesc('created_at')->get();
+        $reports = \App\Models\MaintenanceReport::with(['devices.user', 'schedule.agent'])->orderByDesc('created_at')->get();
         if (request()->has('export') && request('export') === 'pdf') {
             $pdf = Pdf::loadView('maintenance_reports.export_pdf', compact('reports'));
             return $pdf->download('maintenance_reports.pdf');
@@ -41,7 +41,10 @@ class MaintenanceReportController extends Controller
     {
         $validated = $request->validate([
             'schedule_id'    => 'required|exists:maintenance_schedules,id',
-            'device_id'      => 'required|exists:devices,id',
+            'device_ids'     => 'required|array|min:1',
+            'device_ids.*'   => 'exists:devices,id',
+            'problematic_devices' => 'nullable|array',
+            'problematic_devices.*' => 'exists:devices,id',
             'result'         => 'required|string',
             'recommendation' => 'nullable|string',
             'photo'          => 'nullable|image|max:2048',
@@ -55,15 +58,25 @@ class MaintenanceReportController extends Controller
         // Buat record laporan
         $report = \App\Models\MaintenanceReport::create([
             'maintenance_schedule_id' => $validated['schedule_id'],
-            'device_id'      => $validated['device_id'],
             'result'         => $validated['result'],
             'recommendation' => $validated['recommendation'] ?? null,
             'photo'          => $photoPath,
             // report_pdf akan diisi otomatis setelah PDF digenerate
         ]);
 
+        // Attach devices with problematic status
+        $problematicDevices = $validated['problematic_devices'] ?? [];
+        $deviceData = [];
+        foreach ($validated['device_ids'] as $deviceId) {
+            $deviceData[$deviceId] = [
+                'is_problematic' => in_array($deviceId, $problematicDevices),
+                'repair_status' => in_array($deviceId, $problematicDevices) ? 'in_progress' : null,
+            ];
+        }
+        $report->devices()->attach($deviceData);
+
         // Muat relasi yang dibutuhkan untuk PDF
-        $report->load(['device.user', 'schedule.agent']);
+        $report->load(['devices.user', 'schedule.agent']);
 
         // Generate PDF otomatis dari template single report
         $pdf = Pdf::loadView('maintenance_reports.single_export_pdf', [
@@ -84,9 +97,10 @@ class MaintenanceReportController extends Controller
         // Simpan path PDF ke kolom report_pdf (relative path pada disk 'public')
         $report->update(['report_pdf' => $pdfPath]);
 
-        // Update status jadwal menjadi 'done'
+        // Update status jadwal based on problematic devices
         if ($report->schedule) {
-            $report->schedule->status = 'done';
+            $hasProblematicDevices = $report->devices()->wherePivot('is_problematic', true)->exists();
+            $report->schedule->status = $hasProblematicDevices ? 'under_repair' : 'done';
             $report->schedule->save();
         }
 
@@ -116,17 +130,19 @@ class MaintenanceReportController extends Controller
     {
         $request->validate([
             'maintenance_schedule_id' => 'required|exists:maintenance_schedules,id',
-            'device_id' => 'required|exists:devices,id',
+            'device_ids' => 'required|array|min:1',
+            'device_ids.*' => 'exists:devices,id',
             'result' => 'required|string',
             'recommendation' => 'nullable|string',
             'photo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
         $report = \App\Models\MaintenanceReport::findOrFail($id);
-        $data = $request->all();
+        $data = $request->only(['maintenance_schedule_id', 'result', 'recommendation']);
         if ($request->hasFile('photo')) {
             $data['photo'] = $request->file('photo')->store('maintenance_photos', 'public');
         }
         $report->update($data);
+        $report->devices()->sync($request->device_ids);
         \App\Models\AuditLog::create([
             'user_id' => auth()->id(),
             'action' => 'update',
@@ -166,5 +182,45 @@ class MaintenanceReportController extends Controller
         return response()->download($absolutePath, basename($absolutePath), [
             'Content-Type' => 'application/pdf',
         ]);
+    }
+
+    /**
+     * Update repair status for a specific device in a maintenance report
+     */
+    public function updateRepairStatus(Request $request, string $reportId, string $deviceId)
+    {
+        $request->validate([
+            'repair_status' => 'required|in:in_progress,completed',
+        ]);
+
+        $report = \App\Models\MaintenanceReport::findOrFail($reportId);
+        $device = \App\Models\Device::findOrFail($deviceId);
+
+        // Update the pivot table
+        $report->devices()->updateExistingPivot($deviceId, [
+            'repair_status' => $request->repair_status,
+        ]);
+
+        // Check if all problematic devices are completed
+        $allProblematicCompleted = !$report->devices()
+            ->wherePivot('is_problematic', true)
+            ->wherePivot('repair_status', '!=', 'completed')
+            ->exists();
+
+        // Update schedule status if all repairs are done
+        if ($report->schedule && $allProblematicCompleted) {
+            $report->schedule->status = 'done';
+            $report->schedule->save();
+        }
+
+        // Log the action
+        \App\Models\AuditLog::create([
+            'user_id' => auth()->id(),
+            'action' => 'update_repair_status',
+            'description' => 'Update repair status for device ID: ' . $deviceId . ' in report ID: ' . $reportId . ' to ' . $request->repair_status,
+            'ip_address' => $request->ip(),
+        ]);
+
+        return redirect()->back()->with('success', 'Status perbaikan berhasil diupdate.');
     }
 }
