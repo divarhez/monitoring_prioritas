@@ -31,16 +31,14 @@ Route::middleware(['auth','role:agent'])->post(
 
 // User Prioritas
 Route::middleware(['auth', 'role:admin'])->group(function () {
-    Route::get('/users', [App\Http\Controllers\UserController::class, 'index'])->name('users.index');
-    Route::get('/users/create', [App\Http\Controllers\UserController::class, 'create'])->name('users.create');
-    Route::post('/users', [App\Http\Controllers\UserController::class, 'store'])->name('users.store');
+    Route::resource('users', App\Http\Controllers\UserController::class);
 });
 
 Route::get('/', [App\Http\Controllers\DashboardController::class, 'index'])->middleware(['auth', 'verified']);
+Route::get('/dashboard/report', [App\Http\Controllers\DashboardController::class, 'generateReport'])->name('dashboard.report')->middleware(['auth', 'verified']);
 
 // Admin: full access, export data
 Route::middleware(['auth', 'role:admin'])->group(function () {
-    Route::resource('agents', App\Http\Controllers\AgentController::class);
     Route::resource('maintenance-schedules', App\Http\Controllers\MaintenanceScheduleController::class);
     // Route resource maintenance-reports dihapus agar tidak bentrok dengan /maintenance-report
 });

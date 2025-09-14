@@ -35,7 +35,7 @@ class MaintenanceScheduleController extends Controller
     public function create()
     {
     $users = \App\Models\User::where('role', 'user')->get();
-    $agents = \App\Models\Agent::all();
+    $agents = \App\Models\User::where('role', 'agent')->get();
     return view('maintenance_schedules.create', compact('users', 'agents'));
     }
 
@@ -46,7 +46,7 @@ class MaintenanceScheduleController extends Controller
     {
         $data = $request->validate([
             'user_id' => 'required|exists:users,id',
-            'agent_id' => 'required|exists:agents,id',
+            'agent_id' => 'required|exists:users,id',
             'scheduled_date' => 'required|date',
             'category' => 'required|in:hardware,software,jaringan',
             'status' => 'nullable|in:scheduled,done,missed',
@@ -83,7 +83,7 @@ class MaintenanceScheduleController extends Controller
     {
     $schedule = \App\Models\MaintenanceSchedule::findOrFail($id);
     $users = \App\Models\User::where('role', 'user')->get();
-    $agents = \App\Models\Agent::all();
+    $agents = \App\Models\User::where('role', 'agent')->get();
     return view('maintenance_schedules.edit', compact('schedule', 'users', 'agents'));
     }
 
@@ -94,7 +94,7 @@ class MaintenanceScheduleController extends Controller
     {
         $request->validate([
             'user_id' => 'required|exists:users,id',
-            'agent_id' => 'required|exists:agents,id',
+            'agent_id' => 'required|exists:users,id',
             'scheduled_date' => 'required|date',
             'category' => 'required|in:hardware,software,jaringan',
             'status' => 'required|string',

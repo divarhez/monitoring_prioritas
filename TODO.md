@@ -6,3 +6,6 @@
 - [x] Improve styling with better badges, colors, and responsive design
 - [x] Test the functionality for admin and agent roles
 - [x] Ensure proper error handling and user feedback
+- [x] Fix testing issues (CSRF and session handling)
+- [x] Add loading indicators for AJAX calls
+- [x] Optimize dashboard queries for better performance

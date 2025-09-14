@@ -5,7 +5,7 @@
 
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
-        <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-download fa-sm text-white-50"></i> Generate Report</a>
+        <a href="{{ route('dashboard.report') }}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-download fa-sm text-white-50"></i> Generate Report</a>
     </div>
 
     <div class="row">
@@ -117,7 +117,7 @@
 
         // 1. Maintenance per Kategori (Pie Chart)
         const categoryCtx = document.getElementById('categoryChart').getContext('2d');
-        new Chart(categoryCtx, {
+        const categoryChart = new Chart(categoryCtx, {
             type: 'doughnut',
             data: {
                 labels: Object.keys(categoryStats),
@@ -139,12 +139,19 @@
                     }
                 },
                 cutout: '80%',
+                onClick: function(event, elements) {
+                    if (elements.length > 0) {
+                        const chartElement = elements[0];
+                        const category = this.data.labels[chartElement.index];
+                        window.location.href = '/maintenance-report?category=' + category;
+                    }
+                }
             }
         });
 
         // 2. Grafik Maintenance per Bulan (Line Chart)
         const maintenanceCtx = document.getElementById('maintenanceChart').getContext('2d');
-        new Chart(maintenanceCtx, {
+        const maintenanceChart = new Chart(maintenanceCtx, {
             type: 'line',
             data: {
                 labels: maintenanceStats.labels,
@@ -169,6 +176,13 @@
                     y: {
                         beginAtZero: true,
                         ticks: { precision: 0 }
+                    }
+                },
+                onClick: function(event, elements) {
+                    if (elements.length > 0) {
+                        const chartElement = elements[0];
+                        const month = this.data.labels[chartElement.index];
+                        window.location.href = '/maintenance-report?month=' + month;
                     }
                 }
             }

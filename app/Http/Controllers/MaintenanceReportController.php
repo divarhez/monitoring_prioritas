@@ -5,15 +5,30 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Storage;
+use App\Helpers\FileHelper;
 
 class MaintenanceReportController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $reports = \App\Models\MaintenanceReport::with(['devices.user', 'schedule.agent'])->orderByDesc('created_at')->get();
+        $query = \App\Models\MaintenanceReport::with(['devices.user', 'schedule.agent'])->orderByDesc('created_at');
+
+        if ($request->has('category')) {
+            $query->whereHas('schedule', function ($q) use ($request) {
+                $q->where('category', $request->category);
+            });
+        }
+
+        if ($request->has('month')) {
+            $month = date('m', strtotime($request->month));
+            $query->whereMonth('created_at', $month);
+        }
+
+        $reports = $query->get();
+
         if (request()->has('export') && request('export') === 'pdf') {
             $pdf = Pdf::loadView('maintenance_reports.export_pdf', compact('reports'));
             return $pdf->download('maintenance_reports.pdf');
@@ -52,7 +67,7 @@ class MaintenanceReportController extends Controller
 
         $photoPath = null;
         if ($request->hasFile('photo')) {
-            $photoPath = $request->file('photo')->store('maintenance_photos', 'public');
+            $photoPath = FileHelper::upload($request->file('photo'), 'maintenance_photos');
         }
 
         // Buat record laporan
@@ -139,7 +154,7 @@ class MaintenanceReportController extends Controller
         $report = \App\Models\MaintenanceReport::findOrFail($id);
         $data = $request->only(['maintenance_schedule_id', 'result', 'recommendation']);
         if ($request->hasFile('photo')) {
-            $data['photo'] = $request->file('photo')->store('maintenance_photos', 'public');
+            $data['photo'] = FileHelper::upload($request->file('photo'), 'maintenance_photos');
         }
         $report->update($data);
         $report->devices()->sync($request->device_ids);

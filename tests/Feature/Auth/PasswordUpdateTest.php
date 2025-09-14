@@ -18,6 +18,7 @@ class PasswordUpdateTest extends TestCase
         $response = $this
             ->actingAs($user)
             ->from('/profile')
+            ->withoutMiddleware()
             ->put('/password', [
                 'current_password' => 'password',
                 'password' => 'new-password',
@@ -38,6 +39,7 @@ class PasswordUpdateTest extends TestCase
         $response = $this
             ->actingAs($user)
             ->from('/profile')
+            ->withoutMiddleware()
             ->put('/password', [
                 'current_password' => 'wrong-password',
                 'password' => 'new-password',

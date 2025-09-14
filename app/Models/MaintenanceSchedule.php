@@ -11,14 +11,13 @@ class MaintenanceSchedule extends Model
 
     protected $fillable = [
         'user_id',
-        'agent_id',
         'scheduled_date',
         'category',
         'status',
     ];
 
     // Auto eager-load user to simplify views
-    protected $with = ['user'];
+    protected $with = ['user', 'agent'];
 
     public function user()
     {
@@ -27,7 +26,7 @@ class MaintenanceSchedule extends Model
 
     public function agent()
     {
-        return $this->belongsTo(\App\Models\Agent::class, 'agent_id');
+        return $this->belongsTo(\App\Models\User::class, 'user_id');
     }
 
     public function reports()

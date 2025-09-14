@@ -56,11 +56,7 @@
                     </li>
 
                     @if(Auth::user() && Auth::user()->role === 'admin')
-                        <li class="nav-item"><a href="/agents" class="nav-link {{ request()->is('agents*') ? 'active' : '' }}"><i class="nav-icon fas fa-user-secret"></i><p>Agents</p></a></li>
-
-                        <li class="nav-item"><a href="/users" class="nav-link {{ request()->is('users') ? 'active' : '' }}"><i class="nav-icon fas fa-users"></i><p>User Prioritas</p></a></li>
-
-
+                        <li class="nav-item"><a href="/users" class="nav-link {{ request()->is('users') ? 'active' : '' }}"><i class="nav-icon fas fa-users"></i><p>User Management</p></a></li>
                         <li class="nav-item"><a href="/devices" class="nav-link {{ request()->is('devices*') ? 'active' : '' }}"><i class="nav-icon fas fa-desktop"></i><p>Devices</p></a></li>
                         <li class="nav-item"><a href="/maintenance-report" class="nav-link {{ request()->is('maintenance-report*') ? 'active' : '' }}"><i class="nav-icon fas fa-file-alt"></i><p>Laporan Maintenance</p></a></li>
                         <li class="nav-item"><a href="/maintenance-history" class="nav-link {{ request()->is('maintenance-history*') ? 'active' : '' }}"><i class="nav-icon fas fa-history"></i><p>Histori Maintenance</p></a></li>

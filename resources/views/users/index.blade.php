@@ -1,110 +1,69 @@
 @extends('layouts.app')
+
 @section('content')
-<div class="container">
-    <!-- Form jadwal maintenance dihapus karena fitur sudah tidak digunakan -->
-    @if(session('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
-    @endif
-    @if(session('error'))
-        <div class="alert alert-danger">{{ session('error') }}</div>
-    @endif
-    <div class="d-flex justify-content-between align-items-center">
-        <h1 class="mb-0">User Prioritas</h1>
-        @if(Auth::user() && Auth::user()->role === 'admin')
-            <a href="{{ route('users.create') }}" class="btn btn-success mb-0">Tambah User Prioritas</a>
-        @endif
+<div class="container-fluid px-4 py-5">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">User Management</h1>
+        <a href="{{ route('users.create') }}" class="btn btn-success btn-sm shadow-sm">
+            <i class="fas fa-plus fa-sm text-white-50"></i> Tambah User
+        </a>
     </div>
-    <form method="GET" action="{{ route('users.index') }}" class="mb-3 mt-2">
-        <div class="input-group">
-            <input type="text" name="q" class="form-control" placeholder="Cari nama/departemen/jabatan/telepon" value="{{ request('q') }}">
-            <div class="input-group-append">
-                <button class="btn btn-primary" type="submit"><i class="fas fa-search"></i> Cari</button>
-                <a href="{{ route('users.index') }}" class="btn btn-secondary">Reset</a>
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Daftar User</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Department</th>
+                            <th>Position</th>
+                            <th>Phone</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($users as $user)
+                        <tr>
+                            <td>{{ $user->name }}</td>
+                            <td>{{ $user->email }}</td>
+                            <td>{{ $user->role }}</td>
+                            <td>{{ $user->department ?? '-' }}</td>
+                            <td>{{ $user->position ?? '-' }}</td>
+                            <td>{{ $user->phone ?? '-' }}</td>
+                            <td>
+                                <a href="{{ route('users.edit', $user->id) }}" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i></a>
+                                <form action="{{ route('users.destroy', $user->id) }}" method="POST" class="d-inline">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?')"><i class="fas fa-trash"></i></button>
+                                </form>
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
             </div>
         </div>
-    </form>
-    <table class="table table-bordered mb-4">
-        <thead>
-            <tr>
-                <th>Nama</th>
-                <th>Departemen</th>
-                <th>Jabatan</th>
-                <th>No Tlp</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach($users as $user)
-            <tr>
-                <td>{{ $user->name }}</td>
-                <td>{{ $user->department ?? '-' }}</td>
-                <td>{{ $user->position ?? '-' }}</td>
-                <td>{{ $user->phone ?? '-' }}</td>
-            </tr>
-            @endforeach
-        </tbody>
-    </table>
-    <div class="d-flex justify-content-end">{{ $users->links() }}</div>
-    <h2>Jadwal Visit/Maintenance</h2>
-    <form method="GET" action="{{ route('users.index') }}" class="mb-3">
-        <div class="row">
-            <div class="col-md-2">
-                <select name="agent_id" class="form-control">
-                    <option value="">Semua Agent</option>
-                    @foreach($agents as $agent)
-                        <option value="{{ $agent->id }}" {{ request('agent_id') == $agent->id ? 'selected' : '' }}>{{ $agent->name }}</option>
-                    @endforeach
-                </select>
-            </div>
-            <div class="col-md-2">
-                <select name="category" class="form-control">
-                    <option value="">Semua Kategori</option>
-                    <option value="hardware" {{ request('category') == 'hardware' ? 'selected' : '' }}>Hardware</option>
-                    <option value="software" {{ request('category') == 'software' ? 'selected' : '' }}>Software</option>
-                    <option value="jaringan" {{ request('category') == 'jaringan' ? 'selected' : '' }}>Jaringan</option>
-                </select>
-            </div>
-            <div class="col-md-2">
-                <select name="status" class="form-control">
-                    <option value="">Semua Status</option>
-                    <option value="scheduled" {{ request('status') == 'scheduled' ? 'selected' : '' }}>Scheduled</option>
-                    <option value="done" {{ request('status') == 'done' ? 'selected' : '' }}>Done</option>
-                    <option value="missed" {{ request('status') == 'missed' ? 'selected' : '' }}>Missed</option>
-                </select>
-            </div>
-            <div class="col-md-2">
-                <input type="date" name="date_from" class="form-control" value="{{ request('date_from') }}" placeholder="Dari Tanggal">
-            </div>
-            <div class="col-md-2">
-                <input type="date" name="date_to" class="form-control" value="{{ request('date_to') }}" placeholder="Sampai Tanggal">
-            </div>
-            <div class="col-md-2">
-                <button type="submit" class="btn btn-primary btn-block">Filter</button>
-                <a href="{{ route('users.index') }}" class="btn btn-secondary btn-block mt-2">Reset</a>
-            </div>
-        </div>
-    </form>
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>User Prioritas</th>
-                <th>Agent</th>
-                <th>Tanggal</th>
-                <th>Kategori</th>
-                <th>Status</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach($schedules as $schedule)
-                <tr>
-                    <td>{{ $schedule->user->name ?? '-' }}</td>
-                    <td>{{ $schedule->agent->name ?? '-' }}</td>
-                    <td>{{ $schedule->scheduled_date }}</td>
-                    <td>{{ ucfirst($schedule->category) }}</td>
-                    <td>{{ ucfirst($schedule->status) }}</td>
-                </tr>
-            @endforeach
-        </tbody>
-    </table>
-    <div class="d-flex justify-content-end">{{ $schedules->links() }}</div>
+    </div>
 </div>
 @endsection
+
+@push('scripts')
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap4.min.js"></script>
+<script>
+$(document).ready(function() {
+    $('#dataTable').DataTable();
+});
+</script>
+@endpush
+
+@push('styles')
+<link href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap4.min.css" rel="stylesheet">
+@endpush

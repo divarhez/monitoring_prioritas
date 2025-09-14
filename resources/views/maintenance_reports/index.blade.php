@@ -64,6 +64,9 @@
                                                     <option value="in_progress" {{ $device->pivot->repair_status === 'in_progress' ? 'selected' : '' }}>Sedang Dikerjakan</option>
                                                     <option value="completed" {{ $device->pivot->repair_status === 'completed' ? 'selected' : '' }}>Selesai Diperbaiki</option>
                                                 </select>
+                                                <div class="spinner-border spinner-border-sm text-primary d-none" role="status">
+                                                    <span class="sr-only">Loading...</span>
+                                                </div>
                                                 <small class="text-muted">{{ $device->type }}</small>
                                             </div>
                                         @endforeach
@@ -105,8 +108,10 @@ $(document).ready(function() {
         var reportId = select.data('report-id');
         var deviceId = select.data('device-id');
         var newStatus = select.val();
+        var spinner = select.siblings('.spinner-border');
 
         select.prop('disabled', true);
+        spinner.removeClass('d-none');
 
         $.ajax({
             url: '/maintenance-report/' + reportId + '/device/' + deviceId + '/update-repair-status',
@@ -118,10 +123,12 @@ $(document).ready(function() {
             success: function(response) {
                 toastr.success('Status perbaikan berhasil diupdate.');
                 select.prop('disabled', false);
+                spinner.addClass('d-none');
             },
             error: function(xhr) {
                 toastr.error('Gagal mengupdate status perbaikan. Silakan coba lagi.');
                 select.prop('disabled', false);
+                spinner.addClass('d-none');
             }
         });
     });
